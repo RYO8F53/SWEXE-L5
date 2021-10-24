@@ -8,11 +8,11 @@ class UsersController < ApplicationController
   end
 
   def create 
-    @user = User.new(uid: params[:user][:uid],pass: params[:user][:pass])
-    if @user.valid? #validatesを実行してくれる
-      #TODO:成功したことを
+    @user = User.new(uid: params[:user][:uid],password: params[:user][:password],password_confirmation: params[:user][:password_confirmation])
+    if @user.valid?
       @user.pass = BCrypt::Password.create(params[:user][:pass])
       @user.save
+      flash[:notice] = 'ユーザを追加しました'
       redirect_to users_path
     else
       render 'new'
@@ -21,7 +21,9 @@ class UsersController < ApplicationController
 
   def destroy
     user = User.find(params[:id])
-    user.destroy
+    if user.destroy
+      flash[:notice] = 'ユーザを削除しました'
+    end
     redirect_to users_path
   end
 end
